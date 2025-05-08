@@ -253,6 +253,11 @@ class CRMLead(models.Model):
         # Store old user_id before write
         old_user_ids = {record.id: record.user_id.id for record in self}
         
+        # First check if we're already in a set_lead_queue operation to prevent recursion
+        if self.env.context.get('setting_lead_queue'):
+            res = super(CRMLead, self).write(vals)
+            return res
+        
         res = super(CRMLead, self).write(vals)
         
         # If user_id (salesperson) changed, reassign pending activities
@@ -274,8 +279,10 @@ class CRMLead(models.Model):
         
         # Add check for type change (lead to opportunity conversion)
         converting_to_opportunity = vals.get('type') == 'opportunity'
-        res = super(CRMLead, self).write(vals)
-        if not self.env.context.get('importing_leads'):
+        
+        # Don't call set_lead_queue again if we're already importing leads or
+        # if we're in the set_lead_queue process to prevent infinite recursion
+        if not self.env.context.get('importing_leads') and not self.env.context.get('setting_lead_queue'):
             for record in self:
                 record.set_lead_queue()
                 # Only check source and course if converting to opportunity or updating specific fields
@@ -294,7 +301,8 @@ class CRMLead(models.Model):
                         ('name', 'ilike', record.preferred_branch)
                     ], limit=1)
                     if team:
-                        record.team_id = team.id
+                        # Use context to prevent recursion
+                        record.with_context(setting_lead_queue=True).team_id = team.id
                 
                 # If no team assigned by preferred branch, try city
                 if not record.team_id and record.city:
@@ -302,7 +310,8 @@ class CRMLead(models.Model):
                         ('name', 'ilike', record.city)
                     ], limit=1)
                     if team:
-                        record.team_id = team.id
+                        # Use context to prevent recursion
+                        record.with_context(setting_lead_queue=True).team_id = team.id
                 
                 # Now proceed with queue-based assignment if we have a team
                 if record.team_id and record.team_id.queue_line_ids:
@@ -310,7 +319,8 @@ class CRMLead(models.Model):
                     # Reset current lead of all salespersons to False, to allow allocating new leads to them in next round
                     if all_users_assigned_lead:
                         record.team_id.queue_line_ids[0].write({'current_lead': record.id})
-                        record.write({'user_id': record.team_id.queue_line_ids[0].salesperson_id.id})
+                        # Use context to prevent recursion
+                        record.with_context(setting_lead_queue=True).user_id = record.team_id.queue_line_ids[0].salesperson_id.id
                         for queue_line in record.team_id.queue_line_ids[1:]:
                             queue_line.write({'current_lead': False})
                     else:
@@ -318,7 +328,8 @@ class CRMLead(models.Model):
                             # If no lead is assigned to this salesperson in current round
                             if not queue_line.current_lead:
                                 queue_line.write({'current_lead': record.id})
-                                record.write({'user_id': queue_line.salesperson_id.id})
+                                # Use context to prevent recursion
+                                record.with_context(setting_lead_queue=True).user_id = queue_line.salesperson_id.id
                                 break
 
     date_deadline = fields.Date(string="Deadline", required=False)
