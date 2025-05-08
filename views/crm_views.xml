@@ -110,17 +110,16 @@
 
             <xpath expr="//group[@name='opportunity_partner']//field[@name='partner_id']" position="attributes">
                 <attribute name="string">Customer</attribute>
-                <attribute name="placeholder">Customer Name</attribute>
-                <!-- Remove any attributes that might be hiding the field -->
-                <attribute name="invisible">0</attribute> 
+                <attribute name="placeholder">Select or Create Customer</attribute>
                 <attribute name="required">1</attribute>
-                <attribute name="options">{'no_quick_create': True}</attribute>
+                <attribute name="invisible">0</attribute>
+                <attribute name="options">{'always_reload': True}</attribute>
             </xpath>
 
             <!-- Ensure the lead_partner group is visible in non-debug mode -->
             <xpath expr="//group[@name='lead_partner']" position="attributes">
                 <attribute name="invisible">0</attribute>
-                <attribute name="string">Customer Information</attribute>
+                <attribute name="string">Customer</attribute>
             </xpath>
 
             <xpath expr="//group[@name='lead_partner']//field[@name='country_id']" position="before">

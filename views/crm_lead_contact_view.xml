@@ -10,32 +10,45 @@
                 <field name="display_name" invisible="1"/>
             </xpath>
             
-            <!-- Make partner_id more visible in lead form -->
+            <!-- Fix partner_id (Customer) field visibility and behavior -->
             <xpath expr="//field[@name='partner_id']" position="attributes">
                 <attribute name="string">Customer</attribute>
-                <attribute name="placeholder">Customer Name</attribute>
+                <attribute name="placeholder">Select or Create Customer</attribute>
                 <attribute name="invisible">0</attribute>
-                <attribute name="options">{'always_reload': True, 'no_quick_create': True}</attribute>
+                <attribute name="attrs">{'required': [('type', '=', 'opportunity')]}</attribute>
+                <attribute name="options">{'no_create_edit': False, 'no_quick_create': False}</attribute>
+                <attribute name="widget">res_partner_many2one</attribute>
             </xpath>
             
-            <!-- Make contact_name more visible -->
+            <!-- Make partner_name more prominent -->
+            <xpath expr="//field[@name='partner_name']" position="attributes">
+                <attribute name="string">Company/Organization</attribute>
+                <attribute name="placeholder">Company or Organization Name</attribute>
+                <attribute name="invisible">0</attribute>
+            </xpath>
+            
+            <!-- Make contact_name clearer -->
             <xpath expr="//field[@name='contact_name']" position="attributes">
                 <attribute name="string">Contact Person</attribute>
-                <attribute name="placeholder">Contact Person's Name</attribute>
+                <attribute name="placeholder">Name of Contact Person</attribute>
+                <attribute name="invisible">0</attribute>
             </xpath>
             
             <!-- Ensure mobile field is visible -->
             <xpath expr="//field[@name='mobile']" position="attributes">
                 <attribute name="string">Mobile</attribute>
+                <attribute name="invisible">0</attribute>
             </xpath>
             
-            <!-- Ensure both partner sections in lead and opportunity views are visible -->
+            <!-- Make both partner sections visible -->
             <xpath expr="//group[@name='lead_partner']" position="attributes">
                 <attribute name="invisible">0</attribute>
+                <attribute name="string">Customer Information</attribute>
             </xpath>
             
             <xpath expr="//group[@name='opportunity_partner']" position="attributes">
                 <attribute name="invisible">0</attribute>
+                <attribute name="string">Customer Details</attribute>
             </xpath>
         </field>
     </record>
