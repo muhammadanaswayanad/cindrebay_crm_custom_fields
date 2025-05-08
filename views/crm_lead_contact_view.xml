@@ -14,6 +14,8 @@
             <xpath expr="//field[@name='partner_id']" position="attributes">
                 <attribute name="string">Customer</attribute>
                 <attribute name="placeholder">Customer Name</attribute>
+                <attribute name="invisible">0</attribute>
+                <attribute name="options">{'always_reload': True, 'no_quick_create': True}</attribute>
             </xpath>
             
             <!-- Make contact_name more visible -->
@@ -25,6 +27,15 @@
             <!-- Ensure mobile field is visible -->
             <xpath expr="//field[@name='mobile']" position="attributes">
                 <attribute name="string">Mobile</attribute>
+            </xpath>
+            
+            <!-- Ensure both partner sections in lead and opportunity views are visible -->
+            <xpath expr="//group[@name='lead_partner']" position="attributes">
+                <attribute name="invisible">0</attribute>
+            </xpath>
+            
+            <xpath expr="//group[@name='opportunity_partner']" position="attributes">
+                <attribute name="invisible">0</attribute>
             </xpath>
         </field>
     </record>
