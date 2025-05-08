@@ -10,45 +10,40 @@
                 <field name="display_name" invisible="1"/>
             </xpath>
             
-            <!-- Fix partner_id (Customer) field visibility and behavior -->
-            <xpath expr="//field[@name='partner_id']" position="attributes">
-                <attribute name="string">Customer</attribute>
-                <attribute name="placeholder">Select or Create Customer</attribute>
-                <attribute name="invisible">0</attribute>
-                <attribute name="attrs">{'required': [('type', '=', 'opportunity')]}</attribute>
-                <attribute name="options">{'no_create_edit': False, 'no_quick_create': False}</attribute>
-                <attribute name="widget">res_partner_many2one</attribute>
-            </xpath>
-            
-            <!-- Make partner_name more prominent -->
+            <!-- Fix partner_name field in lead form -->
             <xpath expr="//field[@name='partner_name']" position="attributes">
                 <attribute name="string">Company/Organization</attribute>
-                <attribute name="placeholder">Company or Organization Name</attribute>
+                <attribute name="placeholder">Company Name</attribute>
                 <attribute name="invisible">0</attribute>
             </xpath>
             
-            <!-- Make contact_name clearer -->
+            <!-- Fix contact_name display -->
             <xpath expr="//field[@name='contact_name']" position="attributes">
                 <attribute name="string">Contact Person</attribute>
-                <attribute name="placeholder">Name of Contact Person</attribute>
+                <attribute name="placeholder">Contact Person's Name</attribute>
                 <attribute name="invisible">0</attribute>
             </xpath>
             
-            <!-- Ensure mobile field is visible -->
-            <xpath expr="//field[@name='mobile']" position="attributes">
-                <attribute name="string">Mobile</attribute>
+            <!-- Fix partner_id in both views -->
+            <xpath expr="//field[@name='partner_id'][1]" position="attributes">
+                <attribute name="string">Customer</attribute>
+                <attribute name="placeholder">Select or Create Customer</attribute>
+                <attribute name="options">{'no_create_edit': False}</attribute>
                 <attribute name="invisible">0</attribute>
             </xpath>
             
-            <!-- Make both partner sections visible -->
+            <!-- Also fix the second instance if it exists -->
+            <xpath expr="//field[@name='partner_id'][2]" position="attributes" optional="1">
+                <attribute name="string">Customer</attribute>
+                <attribute name="placeholder">Select or Create Customer</attribute>
+                <attribute name="options">{'no_create_edit': False}</attribute>
+                <attribute name="invisible">0</attribute>
+            </xpath>
+            
+            <!-- Make lead_partner section visible -->
             <xpath expr="//group[@name='lead_partner']" position="attributes">
+                <attribute name="string">Customer</attribute>
                 <attribute name="invisible">0</attribute>
-                <attribute name="string">Customer Information</attribute>
-            </xpath>
-            
-            <xpath expr="//group[@name='opportunity_partner']" position="attributes">
-                <attribute name="invisible">0</attribute>
-                <attribute name="string">Customer Details</attribute>
             </xpath>
         </field>
     </record>
